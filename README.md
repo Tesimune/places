@@ -1,5 +1,3 @@
----
-
 # Django Application
 
 A Django web application for managing tokens and places, using PostgreSQL for the database and Redis for caching.
