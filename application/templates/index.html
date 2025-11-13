@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PlacesAPI - Location Search for Developers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+      @keyframes pulse-slow {
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+      .animate-pulse-slow {
+        animation: pulse-slow 3s ease-in-out infinite;
+      }
+      .animate-pulse-delay {
+        animation: pulse-slow 3s ease-in-out infinite;
+        animation-delay: 1s;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+      .group:hover .group-hover\:translate-x-1 {
+        transform: translateX(0.25rem);
+      }
+      .group:hover .group-hover\:scale-110 {
+        transform: scale(1.1);
+      }
+      .hover\:scale-105:hover {
+        transform: scale(1.05);
+      }
+      .code-block {
+        background: linear-gradient(
+          135deg,
+          rgba(15, 23, 42, 0.9),
+          rgba(30, 41, 59, 0.9)
+        );
+        backdrop-filter: blur(10px);
+      }
+
+      /* Ensure scrolling works */
+      html,
+      body {
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.5);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(139, 92, 246, 0.5);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(139, 92, 246, 0.7);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative"
+  >
+    <!-- Animated background elements -->
+    <div class="fixed inset-0 pointer-events-none">
+      <div
+        class="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow"
+      ></div>
+      <div
+        class="absolute bottom-1/4 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-delay"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-[600px] md:h-[600px] bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-full blur-3xl"
+      ></div>
+    </div>
+
+    <!-- Grid pattern overlay -->
+    <div
+      class="fixed inset-0 opacity-20 pointer-events-none"
+      style="
+        background-image: linear-gradient(
+            rgba(255, 255, 255, 0.02) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 50px 50px;
+      "
+    ></div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 min-h-screen">
+      <!-- Hero Section -->
+      <section class="px-4 py-12 md:py-20 lg:py-24">
+        <div class="max-w-6xl mx-auto">
+          <!-- Header -->
+          <div class="text-center mb-12 md:mb-16">
+            <div
+              class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1.5 md:px-4 md:py-2 mb-4 md:mb-6"
+            >
+              <i
+                data-lucide="code"
+                class="w-3 h-3 md:w-4 md:h-4 text-purple-400"
+              ></i>
+              <span class="text-xs md:text-sm text-gray-300 font-medium"
+                >Developer-First API</span
+              >
+            </div>
+
+            <h1
+              class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent mb-4 md:mb-6 leading-tight px-4"
+            >
+              Location Search API
+              <br />
+              <span
+                class="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
+              >
+                Built for Developers
+              </span>
+            </h1>
+
+            <p
+              class="text-base md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-6 md:mb-8 px-4"
+            >
+              Integrate powerful location search, geocoding, and place discovery
+              into your applications. Fast, reliable, and developer-friendly
+              APIs with global coverage.
+            </p>
+
+            <div
+              class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4"
+            >
+              <a
+              href="/admin"
+                class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-semibold transition-all duration-300 transform hover:scale-105 group"
+              >
+                <div class="flex items-center justify-center gap-2 md:gap-3">
+                  <i data-lucide="key" class="w-4 h-4 md:w-5 md:h-5"></i>
+                  <span>Get API Key</span>
+                  <i
+                    data-lucide="arrow-right"
+                    class="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300"
+                  ></i>
+                </div>
+              </a>
+              <a
+              href="/#documentation"
+                class="bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-semibold transition-all duration-300"
+              >
+                <div class="flex items-center justify-center gap-2 md:gap-3">
+                  <i data-lucide="book-open" class="w-4 h-4 md:w-5 md:h-5"></i>
+                  <span>View Docs</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Demo Section -->
+      <section class="px-4 py-8 md:py-12">
+        <div class="max-w-6xl mx-auto">
+          <div class="grid lg:grid-cols-2 gap-6 md:gap-8">
+            <!-- Live Demo -->
+            <div
+              class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl"
+            >
+              <div class="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+                <div
+                  class="w-2 h-2 md:w-3 md:h-3 bg-green-400 rounded-full"
+                ></div>
+                <div
+                  class="w-2 h-2 md:w-3 md:h-3 bg-yellow-400 rounded-full"
+                ></div>
+                <div
+                  class="w-2 h-2 md:w-3 md:h-3 bg-red-400 rounded-full"
+                ></div>
+                <span class="text-gray-300 text-xs md:text-sm ml-2"
+                  >Live Demo</span
+                >
+              </div>
+
+              <form id="demoForm" class="space-y-3 md:space-y-4">
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-3 md:left-4 flex items-center pointer-events-none"
+                  >
+                    <i
+                      data-lucide="search"
+                      class="w-4 h-4 md:w-5 md:h-5 text-gray-400"
+                    ></i>
+                  </div>
+                  <input
+                    type="text"
+                    id="demoInput"
+                    placeholder="Try: restaurants in New York"
+                    class="w-full pl-10 md:pl-12 pr-3 md:pr-4 py-3 md:py-4 text-sm md:text-base bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg md:rounded-xl text-white placeholder:text-gray-400 focus:border-purple-400/50 focus:ring-2 focus:ring-purple-400/20 focus:outline-none transition-all duration-300"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  id="demoButton"
+                  class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 md:px-6 py-3 md:py-4 rounded-lg md:rounded-xl text-sm md:text-base font-semibold transition-all duration-300 transform hover:scale-105"
+                >
+                  <div
+                    id="demoButtonContent"
+                    class="flex items-center justify-center gap-2"
+                  >
+                    <i data-lucide="play" class="w-3 h-3 md:w-4 md:h-4"></i>
+                    <span>Test API</span>
+                  </div>
+                  <div
+                    id="demoLoadingContent"
+                    class="hidden flex items-center justify-center gap-2"
+                  >
+                    <div
+                      class="w-3 h-3 md:w-4 md:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                    ></div>
+                    <span>Searching...</span>
+                  </div>
+                </button>
+              </form>
+
+              <div
+                id="demoResults"
+                class="hidden code-block mt-4 md:mt-6 p-3 md:p-4 bg-white/5 rounded-lg md:rounded-xl border border-white/10"
+              >
+                <div class="text-green-400 text-xs md:text-sm mb-2">
+                  ✓ API Response (200ms)
+                </div>
+                <div class="text-gray-300 text-xs md:text-sm font-mono">
+                  Found 247 restaurants in New York
+                </div>
+                <pre
+                  class="result-list overflow-x-auto text-xs md:text-sm text-gray-300 font-mono mt-4"
+                ><code></code></pre>
+              </div>
+            </div>
+
+            <!-- Code Example -->
+            <div
+              class="code-block rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl border border-white/10"
+            >
+              <div class="flex items-center justify-between mb-4 md:mb-6">
+                <div class="flex items-center gap-2 md:gap-3">
+                  <i
+                    data-lucide="terminal"
+                    class="w-4 h-4 md:w-5 md:h-5 text-purple-400"
+                  ></i>
+                  <span class="text-white font-semibold text-sm md:text-base"
+                    >Quick Integration</span
+                  >
+                </div>
+                <div class="flex gap-1 md:gap-2">
+                  <button
+                    class="text-xs bg-purple-600/20 text-purple-300 px-2 md:px-3 py-1 rounded-md"
+                  >
+                    JS
+                  </button>
+                  <button
+                    class="text-xs bg-white/10 text-gray-400 px-2 md:px-3 py-1 rounded-md hidden sm:block"
+                  >
+                    Python
+                  </button>
+                  <button
+                    class="text-xs bg-white/10 text-gray-400 px-2 md:px-3 py-1 rounded-md hidden sm:block"
+                  >
+                    cURL
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <pre class="text-xs md:text-sm text-gray-300"><code><span
+                                    class="text-purple-400">const</span> <span
+                                    class="text-blue-300">response</span> = <span
+                                    class="text-purple-400">await</span> <span
+                                    class="text-yellow-300">fetch</span>(<span class="text-green-300">`${BASE_URL}/search`</span>, {
+  <span class="text-blue-300">method</span>: <span class="text-green-300">'POST'</span>,
+  <span class="text-blue-300">headers</span>: {
+    <span class="text-green-300">'Authorization'</span>: <span class="text-green-300">'Bearer YOUR_API_KEY'</span>,
+    <span class="text-green-300">'Content-Type'</span>: <span class="text-green-300">'application/json'</span>
+  },
+  <span class="text-blue-300">body</span>: <span class="text-yellow-300">JSON</span>.<span class="text-yellow-300">stringify</span>({
+    <span class="text-blue-300">query</span>: <span class="text-green-300">'restaurants in New York'</span>,
+    <span class="text-blue-300">limit</span>: <span class="text-orange-400">10</span>,
+  })
+});
+
+<span class="text-purple-400">const</span> <span class="text-blue-300">data</span> = <span
+                                        class="text-purple-400">await</span> <span class="text-blue-300">response</span>.<span
+                                        class="text-yellow-300">json</span>();
+<span class="text-gray-500">// Returns: places, coordinates, ratings...</span></code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Grid -->
+      <section class="px-4 py-8 md:py-12">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+          >
+            <div
+              class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 text-center group hover:bg-white/10 transition-all duration-300"
+            >
+              <div
+                class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg md:rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300"
+              >
+                <i
+                  data-lucide="zap"
+                  class="w-5 h-5 md:w-6 md:h-6 text-purple-400"
+                ></i>
+              </div>
+              <h3 class="text-white font-semibold mb-2 text-sm md:text-base">
+                Lightning Fast
+              </h3>
+              <p class="text-gray-400 text-xs md:text-sm">
+                Sub-200ms response times with global CDN
+              </p>
+            </div>
+
+            <div
+              class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 text-center group hover:bg-white/10 transition-all duration-300"
+            >
+              <div
+                class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg md:rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300"
+              >
+                <i
+                  data-lucide="globe"
+                  class="w-5 h-5 md:w-6 md:h-6 text-blue-400"
+                ></i>
+              </div>
+              <h3 class="text-white font-semibold mb-2 text-sm md:text-base">
+                Global Coverage
+              </h3>
+              <p class="text-gray-400 text-xs md:text-sm">
+                200+ countries with real-time data
+              </p>
+            </div>
+
+            <div
+              class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 text-center group hover:bg-white/10 transition-all duration-300 sm:col-span-2 lg:col-span-1"
+            >
+              <div
+                class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg md:rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300"
+              >
+                <i
+                  data-lucide="shield-check"
+                  class="w-5 h-5 md:w-6 md:h-6 text-purple-400"
+                ></i>
+              </div>
+              <h3 class="text-white font-semibold mb-2 text-sm md:text-base">
+                Enterprise Ready
+              </h3>
+              <p class="text-gray-400 text-xs md:text-sm">
+                99.9% uptime SLA with dedicated support
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- API Endpoints -->
+      <section class="px-4 py-8 md:py-12" id="documentation">
+        <div class="max-w-6xl mx-auto">
+          <div
+            class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl md:rounded-3xl p-6 md:p-8"
+          >
+            <h2
+              class="text-2xl md:text-3xl font-bold text-white mb-6 md:mb-8 text-center"
+            >
+              Powerful API Endpoints
+            </h2>
+
+            <div class="grid sm:grid-cols-2 gap-4 md:gap-6">
+              <div
+                class="bg-white/5 rounded-lg md:rounded-xl p-4 md:p-6 border border-white/10"
+              >
+                <div class="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                  <div
+                    class="w-6 h-6 md:w-8 md:h-8 bg-green-500/20 rounded-md md:rounded-lg flex items-center justify-center"
+                  >
+                    <i
+                      data-lucide="search"
+                      class="w-3 h-3 md:w-4 md:h-4 text-green-400"
+                    ></i>
+                  </div>
+                  <div>
+                    <h3 class="text-white font-semibold text-sm md:text-base">
+                      Places Search
+                    </h3>
+                    <code class="text-xs text-green-400"
+                      >GET /api/search?query=Okene&limit=10</code
+                    >
+                  </div>
+                </div>
+                <p class="text-gray-400 text-xs md:text-sm">
+                  Find restaurants, hotels, attractions with intelligent search
+                </p>
+              </div>
+
+              <div
+                class="bg-white/5 rounded-lg md:rounded-xl p-4 md:p-6 border border-white/10"
+              >
+                <div class="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                  <div
+                    class="w-6 h-6 md:w-8 md:h-8 bg-blue-500/20 rounded-md md:rounded-lg flex items-center justify-center"
+                  >
+                    <i
+                      data-lucide="map-pin"
+                      class="w-3 h-3 md:w-4 md:h-4 text-blue-400"
+                    ></i>
+                  </div>
+                  <div>
+                    <h3 class="text-white font-semibold text-sm md:text-base">
+                      Geocoding
+                    </h3>
+                    <code class="text-xs text-blue-400">GET /api/geocode?address=1600+Amphitheatre+Parkway&country=US</code>
+                  </div>
+                </div>
+                <p class="text-gray-400 text-xs md:text-sm">
+                  Convert addresses to coordinates with high accuracy
+                </p>
+              </div>
+
+              <div
+                class="bg-white/5 rounded-lg md:rounded-xl p-4 md:p-6 border border-white/10"
+              >
+                <div class="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                  <div
+                    class="w-6 h-6 md:w-8 md:h-8 bg-purple-500/20 rounded-md md:rounded-lg flex items-center justify-center"
+                  >
+                    <i
+                      data-lucide="compass"
+                      class="w-3 h-3 md:w-4 md:h-4 text-purple-400"
+                    ></i>
+                  </div>
+                  <div>
+                    <h3 class="text-white font-semibold text-sm md:text-base">
+                      Nearby Places
+                    </h3>
+                    <code class="text-xs text-purple-400">GET /api/nearby?lat=12.34&lng=56.78&radius=1000</code>
+                  </div>
+                </div>
+                <p class="text-gray-400 text-xs md:text-sm">
+                  Discover places within radius with custom filters
+                </p>
+              </div>
+
+              <div
+                class="bg-white/5 rounded-lg md:rounded-xl p-4 md:p-6 border border-white/10"
+              >
+                <div class="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                  <div
+                    class="w-6 h-6 md:w-8 md:h-8 bg-orange-500/20 rounded-md md:rounded-lg flex items-center justify-center"
+                  >
+                    <i
+                      data-lucide="info"
+                      class="w-3 h-3 md:w-4 md:h-4 text-orange-400"
+                    ></i>
+                  </div>
+                  <div>
+                    <h3 class="text-white font-semibold text-sm md:text-base">
+                      Place Details
+                    </h3>
+                    <code class="text-xs text-orange-400">GET /api/places/:id?lat=12.34&lng=56.78</code>
+                  </div>
+                </div>
+                <p class="text-gray-400 text-xs md:text-sm">
+                  Get comprehensive details, photos, and reviews
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing Tiers -->
+      <section class="px-4 py-8 md:py-12 pb-16 md:pb-24">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-6 md:mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-2 md:mb-4">
+              Free and Open Source
+            </h2>
+            <p class="text-gray-300 text-sm md:text-base">
+              Start free, scale as you grow
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Demo form elements
+      const demoForm = document.getElementById('demoForm');
+      const demoButton = document.getElementById('demoButton');
+      const demoButtonContent = document.getElementById('demoButtonContent');
+      const demoLoadingContent = document.getElementById('demoLoadingContent');
+      const demoInput = document.getElementById('demoInput');
+      const demoResults = document.getElementById('demoResults');
+      const resultText = demoResults.querySelector('.text-gray-300');
+      const resultList = demoResults.querySelector('.result-list');
+      const codeBlock = resultList.querySelector('code');
+
+      demoForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const query = demoInput.value.trim();
+        if (!query) return;
+
+        // Show loading state
+        demoButton.disabled = true;
+        demoButton.classList.add('opacity-50', 'cursor-not-allowed');
+        demoButtonContent.classList.add('hidden');
+        demoLoadingContent.classList.remove('hidden');
+        demoResults.classList.add('hidden');
+
+        try {
+          const response = await fetch(
+            `/api/search?query=${encodeURIComponent(query)}&limit=${3}`,
+            {
+              headers: {
+                "X-Internal-Request": "true"
+              }
+            }
+          );
+          const data = await response.json();
+
+          if (data) {
+            if (data.error) {
+              resultText.textContent = `❌ Error: ${data.error}`;
+            } else {
+              resultText.textContent = `✅ Response (${
+                data.length ?? 'n/a'
+              } results)`;
+            }
+            codeBlock.textContent = JSON.stringify(data, null, 2); // ✅ Show raw JSON
+          } else {
+            resultText.textContent = `❌ No response data`;
+            codeBlock.textContent = '';
+          }
+        } catch (err) {
+          console.error(err);
+          resultText.textContent = `❌ Failed to fetch places`;
+          codeBlock.textContent = '';
+        } finally {
+          demoButton.disabled = false;
+          demoButton.classList.remove('opacity-50', 'cursor-not-allowed');
+          demoButtonContent.classList.remove('hidden');
+          demoLoadingContent.classList.add('hidden');
+          demoResults.classList.remove('hidden');
+        }
+      });
+
+      // Optional parallax effect
+      if (window.innerWidth > 768) {
+        document.addEventListener('mousemove', function (e) {
+          const mouseX = e.clientX / window.innerWidth;
+          const mouseY = e.clientY / window.innerHeight;
+
+          const backgrounds = document.querySelectorAll('.fixed .absolute');
+          backgrounds.forEach((bg, index) => {
+            const speed = (index + 1) * 0.2;
+            bg.style.transform = `translate(${mouseX * speed}px, ${
+              mouseY * speed
+            }px)`;
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
