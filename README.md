@@ -142,5 +142,3 @@ Responses use simple JSON shapes defined in `main.py` (see `PlaceResponse`, `Geo
 
 **License & Contact**
 - MIT-style usage is acceptable for demos. Adapt as needed for your organization.
-
-If you want, I can also: run the app locally, add a sample `.env.example`, or commit the README changes for you. 
