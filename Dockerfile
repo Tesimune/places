@@ -1,27 +1,21 @@
-FROM python:3.12-slim
+FROM python:3.13-slim
 
-# Prevents Python from writing pyc files and buffering stdout
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+# Install uv installer binaries
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
-# Install system dependencies for psycopg2 and build tools
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Copy dependency specification files first to leverage build caching layers
+COPY pyproject.toml uv.lock ./
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install application dependencies cleanly
+RUN uv sync --frozen --no-cache
 
-# Copy app source
-COPY . .
+# Copy over the rest of the application files (including main.py and your static/ folder)
+COPY . /app
 
-# Expose port
+# Expose the matching internal container port
 EXPOSE 8000
 
-# Default CMD (can be overridden by docker-compose)
-CMD ["gunicorn", "application.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Default fallback command if compose doesn't override it
+CMD ["/app/.venv/bin/fastapi", "run", "main.py", "--port", "8000", "--host", "0.0.0.0"]
